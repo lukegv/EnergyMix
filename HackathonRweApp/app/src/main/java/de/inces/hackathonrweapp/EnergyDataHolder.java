@@ -3,6 +3,7 @@ package de.inces.hackathonrweapp;
 import android.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ public class EnergyDataHolder {
 
     public List<Pair<String, Double>> data;
 
-    // todo: time stamp;
+    public Date timestamp;
 
     public  EnergyDataHolder() {
         data = new ArrayList<>();

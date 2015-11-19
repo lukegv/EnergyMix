@@ -8,7 +8,12 @@ import com.opencsv.CSVReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Lennart on 19.11.2015.
@@ -42,7 +47,7 @@ public class EnergyDataParser {
 
             while ((nextLine = reader.readNext()) != null) {
                 // nextLine[] is an array of values from the line
-                Log.d("csv parser", nextLine[0] + nextLine[1] + "etc...");
+                //Log.d("csv parser", nextLine[0] + nextLine[1] + "etc...");
 
                 // check if all relevant entries are numerical (e.g. not NA)
                 for(int i = minDataIndex; i <= maxDataIndex; i+=incrementIndex) {
@@ -72,17 +77,75 @@ public class EnergyDataParser {
         return new EnergyDataHolder();
     }
 
+    public List<EnergyDataHolder> GetTodaysDataHistory() {
+
+        CSVReader reader = new CSVReader(new StringReader(csvData));
+        String [] nextLine;
+        String [] lastLine;
+
+        List<EnergyDataHolder> dataHolderList = new ArrayList<>();
+
+        try {
+            // skip first line that contains headers
+            nextLine = reader.readNext();
+//            lastLine = nextLine;
+
+
+            while ((nextLine = reader.readNext()) != null) {
+                // nextLine[] is an array of values from the line
+                //Log.d("csv parser", nextLine[0] + nextLine[1] + "etc...");
+
+                // check if all relevant entries are numerical (e.g. not NA)
+                for(int i = minDataIndex; i <= maxDataIndex; i+=incrementIndex) {
+                    // if the entry contains not a number, we found our 'latest' data set
+                    if(!isNumeric(nextLine[i])) {
+                        // end at the first NA line
+                        return dataHolderList;
+                    }
+                    // else, continue...
+                }
+                // all entries are numeric, parse current line and add to result
+                dataHolderList.add(parseLine(nextLine));
+            }
+            return dataHolderList;
+        }
+        catch(IOException e)
+        {
+            Log.d("csv parser", "io exception during CSV parsing");
+        }
+
+        // return empty data
+        return dataHolderList;
+    }
+
     EnergyDataHolder parseLine(String[] line) {
 
         // return data
         EnergyDataHolder dataHolder = new EnergyDataHolder();
-//        for(int j = minDataIndex; j <= maxDataIndex; j+=incrementIndex) {
-//            String name = "blubb";
-//            Double value = Double.parseDouble(line[j]);
-//
-//            dataHolder.AddSet(name, value);
-//            Log.d("csv parser", name + value.toString());
-//        }
+
+        // parse timestamp
+        // Direct use of Pattern:
+        Pattern p = Pattern.compile("^(.*)-(.*) \\((?:.*)\\)$");
+        Matcher m = p.matcher(line[1]);
+        String dateStart, dateEnd = "01.01.2000 00:00";
+        while (m.find()) { // Find each match in turn. there should be only one
+            dateStart = m.group(1); // Access a submatch group;
+            dateEnd = m.group(2);
+
+//            Log.d("csv parser", "parsed dates: " + dateStart + ", " + dateEnd);
+        }
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        Date date = new Date();
+        try {
+            date = format.parse(dateEnd);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        dataHolder.timestamp = date;
+
+
+        // parse numbers
         double biomass = Double.parseDouble(line[2]);
         double coal = Double.parseDouble(line[4]) + Double.parseDouble(line[10]) + Double.parseDouble(line[16]);
         double gas = Double.parseDouble(line[6]) + Double.parseDouble(line[8]);
