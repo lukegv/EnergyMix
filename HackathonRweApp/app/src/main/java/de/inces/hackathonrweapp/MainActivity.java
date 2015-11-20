@@ -1,5 +1,6 @@
 package de.inces.hackathonrweapp;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,7 +19,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+        Intent intent = new Intent(this, PieChartActivity.class);
+        startActivity(intent);
 
+        /*
         WebRequester webRequester = new WebRequester();
         String csvData = webRequester.loadData(MainActivity.this);
 
@@ -38,5 +42,6 @@ public class MainActivity extends AppCompatActivity {
             Pair p = dataHistory.get(i).data.get(0);
             Log.d("main activity", p.first + " " + p.second);
         }
+        */
     }
 }
