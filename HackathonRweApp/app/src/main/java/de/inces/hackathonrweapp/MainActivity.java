@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -11,10 +12,13 @@ import android.os.BatteryManager;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +37,7 @@ import org.achartengine.renderer.SimpleSeriesRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 import de.inces.hackathonrweapp.batteryDataRecord.BatteryDB;
 import de.inces.hackathonrweapp.batteryDataRecord.BatteryUpdateReceiver;
@@ -48,6 +53,12 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout containerEnergyMix;
     // Energy Mix Over Time
     private LineChart chartEnergyMixOverTime;
+
+    private Spinner favoriteEnergySource;
+    private CheckBox checkboxFavoriteEnergyNotification;
+
+    // Preferences
+    public static final String PREFS_NAME = "MyPrefsFile";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +81,17 @@ public class MainActivity extends AppCompatActivity {
         this.containerEnergyMix = (RelativeLayout) findViewById(R.id.containerEnergyMix);
 
         this.chartEnergyMixOverTime = (LineChart) findViewById(R.id.chartEnergyMixOverTime);
+
+        this.favoriteEnergySource = (Spinner) findViewById(R.id.spinnerFavoriteEnergySource);
+        this.checkboxFavoriteEnergyNotification = (CheckBox) findViewById(R.id.checkboxFavoriteEnergyNotification);
+
+        // restore settings
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        boolean preferableEnergyMixNotify = settings.getBoolean("preferableEnergyMixNotify", false);
+        int preferableEnergyMixFavorite = settings.getInt("preferableEnergyMixFavorite", 0);
+
+        favoriteEnergySource.setSelection(preferableEnergyMixFavorite);
+        checkboxFavoriteEnergyNotification.setChecked(preferableEnergyMixNotify);
     }
 
     private BroadcastReceiver connectedReceiver = new BroadcastReceiver() {
@@ -125,6 +147,22 @@ public class MainActivity extends AppCompatActivity {
         this.unregisterReceiver(this.disconnectedReceiver);
         this.updateHandler.removeCallbacks(this.updateRun);
     }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+
+        // We need an Editor object to make preference changes.
+        // All objects are from android.context.Context
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("preferableEnergyMixNotify", checkboxFavoriteEnergyNotification.isChecked());
+        editor.putInt("preferableEnergyMixFavorite", favoriteEnergySource.getSelectedItemPosition());
+
+        // Commit the edits!
+        editor.commit();
+    }
+
 
     // Battery Status
 
@@ -199,9 +237,13 @@ public class MainActivity extends AppCompatActivity {
         if (c.moveToFirst()) {
             do {
                 historyList.add(new BatteryHistoryPoint(c.getString(1), c.getInt(2)));
+//                Log.d("bat_history", "battery history timestamp: " + c.getString(1));
             } while (c.moveToNext());
         }
         db.close();
+
+//        Log.d("bat_history", "battery history count: " + historyList.size());
+
         final BatteryHistoryPoint[] history = historyList.toArray(new BatteryHistoryPoint[historyList.size()]);
         runOnUiThread(new Runnable() {
             @Override
@@ -214,6 +256,14 @@ public class MainActivity extends AppCompatActivity {
     private void updateHistoryVisualization(BatteryHistoryPoint[] history) {
         ArrayList<Entry> entries = new ArrayList<Entry>();
         ArrayList<String> xvals = new ArrayList<String>();
+
+        // if too few history points, fill it with other data
+//        if(history.length < 30) {
+//            int remaining =  30-history.length;
+//            int latestPercentage = history[history.length-1].getPercentage();
+//
+//        }
+
         for (int i = 0; i < history.length; i++) {
             entries.add(new Entry(history[i].getPercentage(), i));
             xvals.add(history[i].getTime());

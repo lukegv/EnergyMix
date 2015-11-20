@@ -13,4 +13,6 @@
         <item>Wind</item>
         <item>Other</item>
     </string-array>
+    <string name="notification_text">Choose your favorite energy source:</string>
+    <string name="notification_checkbox">Notify when energy mix is favorable</string>
 </resources>
