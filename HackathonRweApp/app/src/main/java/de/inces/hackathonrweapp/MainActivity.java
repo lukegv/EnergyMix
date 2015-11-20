@@ -11,7 +11,9 @@ import android.os.BatteryManager;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -23,12 +25,17 @@ import com.github.mikephil.charting.data.LineDataSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.inces.hackathonrweapp.batteryActivity.BatteryActivity;
+import de.inces.hackathonrweapp.batteryActivity.BatteryHistoryPoint;
+import de.inces.hackathonrweapp.batteryDataRecord.BatteryDB;
+import de.inces.hackathonrweapp.batteryDataRecord.BatteryUpdateReceiver;
+
 public class MainActivity extends AppCompatActivity {
+
+    private LinearLayout layoutGeneral;
 
     private TextView txtBatteryPercentage;
     private ImageView imgBatteryChargeState;
-
-    private LineChart chartHistory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +46,17 @@ public class MainActivity extends AppCompatActivity {
 
         BatteryUpdateReceiver.registerUpdate(this.getApplicationContext());
 
+        this.layoutGeneral = (LinearLayout) findViewById(R.id.layoutGeneral);
         this.txtBatteryPercentage = (TextView) findViewById(R.id.txtBatteryPercentage);
         this.imgBatteryChargeState = (ImageView) findViewById(R.id.imgBatteryChargeState);
 
-        this.chartHistory = (LineChart) findViewById(R.id.chartHistory);
-        this.chartHistory.setTouchEnabled(false);
-        this.chartHistory.setDescription("");
+        this.layoutGeneral.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent startBatteryActivityIntent = new Intent(MainActivity.this.getApplicationContext(), BatteryActivity.class);
+                MainActivity.this.startActivity(startBatteryActivityIntent);
+            }
+        });
     }
 
     private BroadcastReceiver connectedReceiver = new BroadcastReceiver() {
@@ -66,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             MainActivity.this.updateGeneralData();
-            MainActivity.this.updateHistoryData();
             // repeat the Update each minute
             MainActivity.this.updateHandler.postDelayed(MainActivity.this.updateRun, 60 * 1000);
         }
@@ -153,45 +164,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-    // History Data
-
-    private void updateHistoryData() {
-        List<BatteryHistoryPoint> historyList = new ArrayList<BatteryHistoryPoint>();
-        SQLiteDatabase db = (new BatteryDB(this.getApplicationContext())).getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM " + BatteryDB.UPDATE_TABLE, null);
-        if (c.moveToFirst()) {
-            do {
-                historyList.add(new BatteryHistoryPoint(c.getInt(0), c.getInt(2)));
-            } while (c.moveToNext());
-        }
-        final BatteryHistoryPoint[] history = historyList.toArray(new BatteryHistoryPoint[historyList.size()]);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                MainActivity.this.updateHistoryVisualization(history);
-            }
-        });
-    }
-
-    private void updateHistoryVisualization(BatteryHistoryPoint[] history) {
-        ArrayList<Entry> entries = new ArrayList<Entry>();
-        ArrayList<String> xvals = new ArrayList<String>();
-        for (int i = 0; i < history.length; i++) {
-            entries.add(new Entry(history[i].getPercentage(), history[i].getTime()));
-            xvals.add(Integer.toString(history[i].getTime()));
-        }
-        LineDataSet set = new LineDataSet(entries, "History");
-        set.setAxisDependency(YAxis.AxisDependency.LEFT);
-        set.setDrawCircles(false);
-        set.setLineWidth(3f);
-        set.setColor(Color.BLACK);
-        ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
-        dataSets.add(set);
-        LineData data = new LineData(xvals, dataSets);
-        data.setDrawValues(false);
-        this.chartHistory.setData(data);
-        this.chartHistory.invalidate();
-    }
-
 }

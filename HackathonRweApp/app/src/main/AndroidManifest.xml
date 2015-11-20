@@ -8,17 +8,17 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
-        
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-        <receiver android:name=".BatteryUpdateReceiver">
+
+        <receiver android:name=".batteryDataRecord.BatteryUpdateReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="de.inces.hackathonrweapp.ENERGY_UPDATE_ACTION" />
@@ -26,7 +26,10 @@
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
             </intent-filter>
         </receiver>
-        
+
+        <activity android:name=".batteryActivity.BatteryActivity" >
+
+        </activity>
     </application>
 
 </manifest>

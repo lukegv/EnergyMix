@@ -1,4 +1,4 @@
-package de.inces.hackathonrweapp;
+package de.inces.hackathonrweapp.batteryDataRecord;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

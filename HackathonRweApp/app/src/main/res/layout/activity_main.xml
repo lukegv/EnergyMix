@@ -8,16 +8,20 @@
     tools:context="de.inces.hackathonrweapp.MainActivity">
 
     <ScrollView
+        android:background="@android:color/holo_blue_light"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_margin="5dp"
+            android:layout_margin="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <LinearLayout
+                android:id="@+id/layoutGeneral"
+                android:background="@android:color/background_light"
+                android:clickable="true"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -41,12 +45,6 @@
                     android:textSize="55sp" />
 
             </LinearLayout>
-
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/chartHistory"
-                android:layout_margin="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="300dp" />
 
         </LinearLayout>
 

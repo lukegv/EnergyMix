@@ -1,4 +1,4 @@
-package de.inces.hackathonrweapp;
+package de.inces.hackathonrweapp.batteryDataRecord;
 
 import android.os.SystemClock;
 
