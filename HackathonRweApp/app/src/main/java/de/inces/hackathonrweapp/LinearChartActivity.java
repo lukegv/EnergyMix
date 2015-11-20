@@ -90,43 +90,5 @@ public class LinearChartActivity extends AppCompatActivity {
         this.chart.invalidate();
     }
 
-    /*void setUpGraph(){
-
-        WebRequester webRequester = new WebRequester();
-        String csvData = webRequester.loadData(LinearChartActivity.this);
-
-        EnergyDataParser energyDataParser = new EnergyDataParser(csvData);
-
-        EnergyDataHolder dataHolder = energyDataParser.GetLatestDataSet();
-        List<EnergyDataHolder> dataHistory = energyDataParser.GetTodaysDataHistory();
-
-        //Set some Values for the x-Axis
-        this.graph.getViewport().setXAxisBoundsManual(true);
-        this.graph.getViewport().setMinX(0);
-        this.graph.getViewport().setMaxX(dataHistory.size());
-
-
-
-        for (int j = 0; j < dataHolder.data.size(); j++){
-            series[j] = new LineGraphSeries<DataPoint>(new DataPoint[]{
-                    new DataPoint(0, 0)
-            });
-            //add the Serie to the Graph
-            this.graph.addSeries(series[j]);
-
-
-            Pair<String, Double> p = dataHistory.get(j).data.get(0);
-            series[j].setTitle(p.first);
-            series[j].setColor(COLORS[(j % COLORS.length)]);
-
-            for(int i = 0; i < dataHistory.size(); i++) {
-                Pair<String, Double> pa = dataHistory.get(i).data.get(j);
-
-                series[j].appendData(new DataPoint(i,pa.second),true, dataHistory.size());
-            }
-        }
-
-    }*/
-
 
 }

@@ -52,6 +52,7 @@ public class PieChartActivity extends ActionBarActivity {
         renderer.setDisplayValues(false);
         renderer.setZoomEnabled(false);
         renderer.setShowLegend(false);
+        renderer.setClickEnabled(false);
         float textSize = renderer.getLabelsTextSize();
         textSize = textSize *3;
         renderer.setLabelsTextSize(textSize);

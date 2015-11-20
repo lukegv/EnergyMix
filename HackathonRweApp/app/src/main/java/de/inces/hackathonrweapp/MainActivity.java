@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        Intent intent = new Intent(this, LinearChartActivity.class);
+        Intent intent = new Intent(this, PieChartActivity.class);
         startActivity(intent);
 
         /*
