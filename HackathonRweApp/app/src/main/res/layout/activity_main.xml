@@ -48,33 +48,104 @@
 
             </LinearLayout>
 
-            <com.github.mikephil.charting.charts.LineChart
-                android:background="@android:color/holo_orange_light"
-                android:id="@+id/chartHistory"
+            <RelativeLayout
+                android:background="@android:color/holo_orange_dark"
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="150dp" />
+                android:layout_height="200dp">
+
+                <LinearLayout
+                    android:background="@android:color/white"
+                    android:layout_margin="5dp"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:text="Battery Status History"
+                        android:layout_margin="3dp"
+                        android:textSize="16sp"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/chartHistory"
+                        android:layout_margin="3dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_marginTop="10dp"
                 android:background="@android:color/holo_green_dark"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="400dp">
 
-                <RelativeLayout
-                    android:clickable="false"
+                <LinearLayout
+                    android:orientation="vertical"
                     android:background="@android:color/white"
-                    android:id="@+id/containerEnergyMix"
                     android:layout_margin="5dp"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp" />
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:text="Current Energy Mix"
+                        android:layout_margin="3dp"
+                        android:textSize="16sp"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/chartEnergyMix"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
 
             </RelativeLayout>
 
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/chartEnergyMixOverTime"
+            <RelativeLayout
+                android:layout_marginTop="10dp"
+                android:background="@android:color/holo_red_light"
                 android:layout_width="match_parent"
-                android:layout_height="200dp" />
+                android:layout_height="300dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/white"
+                    android:layout_margin="5dp">
+
+                    <TextView
+                        android:text="Energy Mix History"
+                        android:layout_margin="3dp"
+                        android:textSize="16sp"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:layout_margin="3dp"
+                        android:id="@+id/chartEnergyMixOverTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp" />
 
         </LinearLayout>
 

@@ -19,10 +19,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
@@ -31,7 +38,9 @@ import org.achartengine.model.SeriesSelection;
 import org.achartengine.renderer.DefaultRenderer;
 import org.achartengine.renderer.SimpleSeriesRenderer;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import de.inces.hackathonrweapp.batteryDataRecord.BatteryDB;
@@ -45,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     // Battery History
     private LineChart chartHistory;
     // Energy Mix
-    private RelativeLayout containerEnergyMix;
+    private PieChart chartEnergyMix;
     // Energy Mix Over Time
     private LineChart chartEnergyMixOverTime;
 
@@ -62,12 +71,8 @@ public class MainActivity extends AppCompatActivity {
         this.imgBatteryChargeState = (ImageView) findViewById(R.id.imgBatteryChargeState);
 
         this.chartHistory = (LineChart) findViewById(R.id.chartHistory);
-        this.chartHistory.setTouchEnabled(false);
-        this.chartHistory.setDescription("");
-        this.chartHistory.getLegend().setEnabled(false);
-        this.chartHistory.getXAxis().setDrawLabels(false);
 
-        this.containerEnergyMix = (RelativeLayout) findViewById(R.id.containerEnergyMix);
+        this.chartEnergyMix = (PieChart) findViewById(R.id.chartEnergyMix);
 
         this.chartEnergyMixOverTime = (LineChart) findViewById(R.id.chartEnergyMixOverTime);
     }
@@ -100,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        this.startBatteryHistory();
         this.startEnergyMix();
         this.startEnergyMixOverTime();
         WebRequester webRequester = new WebRequester();
@@ -192,6 +198,16 @@ public class MainActivity extends AppCompatActivity {
 
     // Battery History
 
+    private void startBatteryHistory() {
+        this.chartHistory.setTouchEnabled(false);
+        this.chartHistory.setDescription("");
+        this.chartHistory.getLegend().setEnabled(false);
+        this.chartHistory.setGridBackgroundColor(Color.WHITE);
+        this.chartHistory.setDrawGridBackground(false);
+        this.chartHistory.getAxisRight().setEnabled(false);
+        this.chartHistory.getAxisLeft().setAxisMaxValue(105f);
+    }
+
     private void updateHistoryData() {
         List<BatteryHistoryPoint> historyList = new ArrayList<BatteryHistoryPoint>();
         SQLiteDatabase db = (new BatteryDB(this.getApplicationContext())).getReadableDatabase();
@@ -216,14 +232,15 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> xvals = new ArrayList<String>();
         for (int i = 0; i < history.length; i++) {
             entries.add(new Entry(history[i].getPercentage(), i));
-            xvals.add(history[i].getTime());
+            String time = history[i].getTime();
+            xvals.add(time);
         }
         LineDataSet set = new LineDataSet(entries, "History");
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
         set.setDrawCircles(false);
         set.setLineWidth(3f);
         set.setDrawCubic(true);
-        set.setColor(Color.BLACK);
+        set.setColor(Color.DKGRAY);
         ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
         dataSets.add(set);
         LineData data = new LineData(xvals, dataSets);
@@ -238,26 +255,18 @@ public class MainActivity extends AppCompatActivity {
     private static int[] EnergyMixCOLORS = new int[] { Color.GREEN, Color.BLUE, Color.MAGENTA, Color.CYAN, Color.RED, Color.YELLOW,
             Color.GRAY};
 
-    private CategorySeries series;
-    private DefaultRenderer renderer;
-    /** The chart view that displays the data. */
-    private GraphicalView chartView;
-    private SeriesSelection seriesSelection;
-
     private void startEnergyMix() {
-        series = new CategorySeries("series");
-
-        renderer = new DefaultRenderer();
-        renderer.setStartAngle(180);
-        renderer.setDisplayValues(false);
-        renderer.setZoomEnabled(false);
-        renderer.setShowLegend(false);
-        renderer.setClickEnabled(false);
-        float textSize = renderer.getLabelsTextSize();
-        textSize = textSize *3;
-        renderer.setLabelsTextSize(textSize);
-
-        chartView = ChartFactory.getPieChartView(this, series, renderer);
+        this.chartEnergyMix.setTouchEnabled(false);
+        this.chartEnergyMix.setDescription("");
+        this.chartEnergyMix.setUsePercentValues(false);
+        this.chartEnergyMix.setDrawHoleEnabled(true);
+        this.chartEnergyMix.setHoleRadius(40f);
+        this.chartEnergyMix.setHoleColorTransparent(false);
+        this.chartEnergyMix.setDrawSliceText(false);
+        this.chartEnergyMix.getLegend().setForm(Legend.LegendForm.CIRCLE);
+        this.chartEnergyMix.getLegend().setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
+        this.chartEnergyMix.getLegend().setWordWrapEnabled(true);
+        this.chartEnergyMix.setNoDataText("Could not load current energy mix!");
     }
 
     public void updateEnergyMix() {
@@ -265,46 +274,48 @@ public class MainActivity extends AppCompatActivity {
 
         EnergyDataHolder dataHolder = energyDataParser.GetLatestDataSet();
 
+        ArrayList<Entry> yVals = new ArrayList<Entry>();
+        ArrayList<String> xVals = new ArrayList<String>();
+
         for(int i = 0; i < dataHolder.data.size(); i++) {
-            Pair p = dataHolder.data.get(i);
-            addNewSeriespoint(p);
+            Pair<String, Double> p = dataHolder.data.get(i);
+            double d = p.second;
+            float f = (float) d;
+            yVals.add(new Entry(f, i));
+            xVals.add(p.first);
         }
 
-        seriesSelection = chartView.getCurrentSeriesAndPoint();
+        PieDataSet set = new PieDataSet(yVals, "");
+        set.setSliceSpace(5f);
+        set.setDrawValues(false);
 
-        if (seriesSelection == null) {
-            Toast.makeText(MainActivity.this, "No chart element selected", Toast.LENGTH_SHORT)
-                    .show();
-        } else {
-            for (int i = 0; i < series.getItemCount(); i++) {
-                renderer.getSeriesRendererAt(i).setHighlighted(i == seriesSelection.getPointIndex());
-            }
-            chartView.repaint();
-            Toast.makeText(
-                    MainActivity.this,
-                    "Chart data point index " + seriesSelection.getPointIndex() + " selected"
-                            + " point value=" + seriesSelection.getValue(), Toast.LENGTH_SHORT).show();
+        ArrayList<Integer> colors = new ArrayList<Integer>();
+        for (int c : ColorTemplate.COLORFUL_COLORS) {
+            colors.add(c);
         }
+        for (int c : ColorTemplate.JOYFUL_COLORS) {
+            colors.add(c);
+        }
+        for (int c : ColorTemplate.VORDIPLOM_COLORS) {
+            colors.add(c);
+        }
+        set.setColors(colors);
 
-        this.containerEnergyMix.addView(chartView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        chartView.repaint();
-    }
-
-    private void addNewSeriespoint(Pair p){
-        series.add(p.first.toString(), new Double(p.second.toString()));
-        SimpleSeriesRenderer simpleSeriesRenderer = new SimpleSeriesRenderer();
-        simpleSeriesRenderer.setColor(EnergyMixCOLORS[(series.getItemCount() - 1) % EnergyMixCOLORS.length]);
-        renderer.addSeriesRenderer(simpleSeriesRenderer);
+        PieData data = new PieData(xVals, set);
+        this.chartEnergyMix.setData(data);
+        this.chartEnergyMix.invalidate();
     }
 
     // Energy Mix Over Time
 
-    private static int[] EnergyMixOverTimeCOLORS = new int[] { Color.GREEN, Color.BLUE, Color.MAGENTA, Color.CYAN, Color.RED, Color.YELLOW,
-            Color.GRAY};
-
     private void startEnergyMixOverTime() {
         this.chartEnergyMixOverTime.setTouchEnabled(false);
         this.chartEnergyMixOverTime.setDescription("");
+        this.chartEnergyMixOverTime.getLegend().setForm(Legend.LegendForm.CIRCLE);
+        this.chartEnergyMixOverTime.getLegend().setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
+        this.chartEnergyMixOverTime.getLegend().setWordWrapEnabled(true);
+        this.chartEnergyMixOverTime.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        this.chartEnergyMixOverTime.setGridBackgroundColor(Color.WHITE);
     }
 
     private void updateEnergyMixOverTime() {
@@ -315,6 +326,17 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayList<String> xvals = new ArrayList<String>();
         ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
+
+        ArrayList<Integer> colors = new ArrayList<Integer>();
+        for (int c : ColorTemplate.COLORFUL_COLORS) {
+            colors.add(c);
+        }
+        for (int c : ColorTemplate.JOYFUL_COLORS) {
+            colors.add(c);
+        }
+        for (int c : ColorTemplate.VORDIPLOM_COLORS) {
+            colors.add(c);
+        }
 
         for (int j = 0; j < dataHolder.data.size(); j++) {
 
@@ -327,14 +349,16 @@ public class MainActivity extends AppCompatActivity {
                 double d = pa.second;
                 float v = (float) d;
                 entries.add(new Entry(v, i));
-                if(j==0)
-                    xvals.add(Integer.toString(i));
+                if(j==0) {
+                    Date dt = dataHistory.get(i).timestamp;
+                    xvals.add(Integer.toString(dt.getDate()) + "." + Integer.toString(dt.getMonth()));
+                }
             }
             LineDataSet set = new LineDataSet(entries, name);
             set.setAxisDependency(YAxis.AxisDependency.LEFT);
             set.setDrawCircles(false);
-            set.setLineWidth(3f);
-            set.setColor(EnergyMixOverTimeCOLORS[(j % EnergyMixOverTimeCOLORS.length)]);
+            set.setLineWidth(2f);
+            set.setColor(colors.get(j));
             set.setDrawCubic(true);
 
             dataSets.add(set);
