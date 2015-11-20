@@ -4,6 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
+import android.widget.Toast;
+
+
 
 import java.util.List;
 
@@ -13,6 +16,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
+//        WebRequester webRequester = new WebRequester();
+//        webRequester.loadData(MainActivity.this);
+
 
         String sampleCsvData = "\"Area\",\"MTU\",\"Biomass  - Actual Aggregated [MW]\",\"Biomass  - Actual Aggregated [MW]\",\"Fossil Brown coal/Lignite  - Actual Aggregated [MW]\",\"Fossil Brown coal/Lignite  - Actual Aggregated [MW]\",\"Fossil Coal-derived gas  - Actual Aggregated [MW]\",\"Fossil Coal-derived gas  - Actual Aggregated [MW]\",\"Fossil Gas  - Actual Aggregated [MW]\",\"Fossil Gas  - Actual Aggregated [MW]\",\"Fossil Hard coal  - Actual Aggregated [MW]\",\"Fossil Hard coal  - Actual Aggregated [MW]\",\"Fossil Oil  - Actual Aggregated [MW]\",\"Fossil Oil  - Actual Aggregated [MW]\",\"Fossil Oil shale  - Actual Aggregated [MW]\",\"Fossil Oil shale  - Actual Aggregated [MW]\",\"Fossil Peat  - Actual Aggregated [MW]\",\"Fossil Peat  - Actual Aggregated [MW]\",\"Geothermal  - Actual Aggregated [MW]\",\"Geothermal  - Actual Aggregated [MW]\",\"Hydro Pumped Storage  - Actual Aggregated [MW]\",\"Hydro Pumped Storage  - Actual Aggregated [MW]\",\"Hydro Run-of-river and poundage  - Actual Aggregated [MW]\",\"Hydro Run-of-river and poundage  - Actual Aggregated [MW]\",\"Hydro Water Reservoir  - Actual Aggregated [MW]\",\"Hydro Water Reservoir  - Actual Aggregated [MW]\",\"Marine  - Actual Aggregated [MW]\",\"Marine  - Actual Aggregated [MW]\",\"Nuclear  - Actual Aggregated [MW]\",\"Nuclear  - Actual Aggregated [MW]\",\"Other  - Actual Aggregated [MW]\",\"Other  - Actual Aggregated [MW]\",\"Other renewable  - Actual Aggregated [MW]\",\"Other renewable  - Actual Aggregated [MW]\",\"Solar  - Actual Aggregated [MW]\",\"Solar  - Actual Aggregated [MW]\",\"Waste  - Actual Aggregated [MW]\",\"Waste  - Actual Aggregated [MW]\",\"Wind Offshore  - Actual Aggregated [MW]\",\"Wind Offshore  - Actual Aggregated [MW]\",\"Wind Onshore  - Actual Aggregated [MW]\",\"Wind Onshore  - Actual Aggregated [MW]\"\n" +
                 "\"BZN|DE-AT-LU\",\"19.11.2015 00:00 - 19.11.2015 00:15 (CET)\",\"4044\",\"0\",\"10496\",\"0\",\"366\",\"0\",\"2864\",\"0\",\"2777\",\"0\",\"194\",\"0\",\"0\",\"0\",\"0\",\"0\",\"7\",\"0\",\"18\",\"1762\",\"2009\",\"0\",\"277\",\"0\",\"0\",\"0\",\"9865\",\"0\",\"3482\",\"0\",\"37\",\"0\",\"0\",\"0\",\"275\",\"0\",\"2481\",\"0\",\"27251\",\"0\"\n" +
