@@ -40,12 +40,10 @@ public class EnergyDataParser {
         EnergyDataHolder dataHolder;
 
         try {
-            // skip first line that contains headers
             nextLine = reader.readNext();
             lastLine = nextLine;
 
-
-            while ((nextLine = reader.readNext()) != null) {
+            do {
                 // nextLine[] is an array of values from the line
                 //Log.d("csv parser", nextLine[0] + nextLine[1] + "etc...");
 
@@ -62,7 +60,7 @@ public class EnergyDataParser {
                 }
                 // all entries are numeric, save current line and check the next one...
                 lastLine = nextLine;
-            }
+            } while ((nextLine = reader.readNext()) != null);
 
             // if all lines were read and no NA is found, parse the last line
             dataHolder = parseLine(lastLine);
