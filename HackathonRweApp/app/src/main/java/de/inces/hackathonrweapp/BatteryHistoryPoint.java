@@ -1,4 +1,4 @@
-package de.inces.hackathonrweapp.batteryActivity;
+package de.inces.hackathonrweapp;
 
 /**
  * Created by Koerfer on 20.11.2015.

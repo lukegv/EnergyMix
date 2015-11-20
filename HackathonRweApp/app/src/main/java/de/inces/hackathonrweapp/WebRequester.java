@@ -43,10 +43,10 @@ public class WebRequester {
                         // Display the first 500 characters of the response string.
                         Log.d("volley", "Response is: " + response.substring(0, 100) + "...");
                         Log.d("volley", "Response length is: "+ response.length());
-                        MainActivity.csvData = response;
+                        //MainActivity.csvData = response;
 
-                        MainActivity mainActivity = (MainActivity)context;
-                        mainActivity.updateView();
+                        //MainActivity mainActivity = (MainActivity)context;
+                        //mainActivity.updateView();
 
                         Toast t = Toast.makeText(context, "Data Update Successful!", Toast.LENGTH_SHORT);
                         t.show();

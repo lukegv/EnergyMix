@@ -8,7 +8,7 @@
     tools:context="de.inces.hackathonrweapp.MainActivity">
 
     <ScrollView
-        android:background="@android:color/holo_blue_light"
+        android:background="@android:color/background_light"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -20,7 +20,7 @@
 
             <LinearLayout
                 android:id="@+id/layoutGeneral"
-                android:background="@android:color/background_light"
+                android:background="@android:color/holo_blue_dark"
                 android:clickable="true"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -28,7 +28,8 @@
 
                 <ImageView
                     android:id="@+id/imgBatteryChargeState"
-                    android:layout_margin="10dp"
+                    android:background="@android:color/white"
+                    android:layout_margin="5dp"
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:layout_width="0dp"
@@ -36,7 +37,8 @@
 
                 <TextView
                     android:id="@+id/txtBatteryPercentage"
-                    android:layout_margin="10dp"
+                    android:textColor="@android:color/white"
+                    android:layout_margin="3dp"
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -45,6 +47,13 @@
                     android:textSize="55sp" />
 
             </LinearLayout>
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:background="@android:color/holo_orange_light"
+                android:id="@+id/chartHistory"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="150dp" />
 
         </LinearLayout>
 
