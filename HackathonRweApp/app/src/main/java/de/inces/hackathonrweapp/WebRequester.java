@@ -27,8 +27,8 @@ public class WebRequester {
 //        HttpsTrustManager.allowAllSSL();
 
         // hard-coded URL
-        String url ="http://rwe-hackathon.lima-city.de/query_energy_database.php?auth=3a1b30712e4d86ba&key=3061c95fc954aa1f";
-
+        final String url ="http://rwe-hackathon.lima-city.de/query_energy_database.php?auth=3a1b30712e4d86ba&key=3061c95fc954aa1f";
+        
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -37,11 +37,9 @@ public class WebRequester {
                         // Display the first 500 characters of the response string.
                         Log.d("volley", "Response is: " + response.substring(0, 100) + "...");
                         Log.d("volley", "Response length is: "+ response.length());
+
                         activity.EnergyMixData = response;
                         activity.updateEnergyMixData();
-
-                        Toast t = Toast.makeText(activity.getApplicationContext(), "Data Update Successful!", Toast.LENGTH_SHORT);
-                        t.show();
 
                     }
                 },

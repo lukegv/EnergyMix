@@ -14,6 +14,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -35,13 +38,6 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
-import org.achartengine.ChartFactory;
-import org.achartengine.GraphicalView;
-import org.achartengine.model.CategorySeries;
-import org.achartengine.model.SeriesSelection;
-import org.achartengine.renderer.DefaultRenderer;
-import org.achartengine.renderer.SimpleSeriesRenderer;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,6 +48,8 @@ import de.inces.hackathonrweapp.batteryDataRecord.BatteryDB;
 import de.inces.hackathonrweapp.batteryDataRecord.BatteryUpdateReceiver;
 
 public class MainActivity extends AppCompatActivity {
+
+    private WebRequester webRequester;
 
     // Battery State
     private TextView txtBatteryPercentage;
@@ -78,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
 
         BatteryUpdateReceiver.registerUpdate(this.getApplicationContext());
 
+        this.webRequester = new WebRequester();
+
         this.txtBatteryPercentage = (TextView) findViewById(R.id.txtBatteryPercentage);
         this.imgBatteryChargeState = (ImageView) findViewById(R.id.imgBatteryChargeState);
 
@@ -97,6 +97,23 @@ public class MainActivity extends AppCompatActivity {
 
         favoriteEnergySource.setSelection(preferableEnergyMixFavorite);
         checkboxFavoriteEnergyNotification.setChecked(preferableEnergyMixNotify);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.itemUpdate) {
+            this.webRequester.loadData(this);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     private BroadcastReceiver connectedReceiver = new BroadcastReceiver() {
@@ -130,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
         this.startBatteryHistory();
         this.startEnergyMix();
         this.startEnergyMixOverTime();
-        WebRequester webRequester = new WebRequester();
         webRequester.loadData(MainActivity.this);
         IntentFilter confilter = new IntentFilter(Intent.ACTION_POWER_CONNECTED);
         this.registerReceiver(this.connectedReceiver, confilter);

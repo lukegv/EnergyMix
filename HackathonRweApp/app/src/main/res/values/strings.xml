@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HackathonRWTH Energy App</string>
+    <string name="app_name">RWE Energy App</string>
     <string-array name="energytypes_array">
         <item>Biomass</item>
         <item>Coal</item>
