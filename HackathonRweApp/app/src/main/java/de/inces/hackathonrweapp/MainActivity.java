@@ -233,11 +233,12 @@ public class MainActivity extends AppCompatActivity {
     private void updateHistoryData() {
         List<BatteryHistoryPoint> historyList = new ArrayList<BatteryHistoryPoint>();
         SQLiteDatabase db = (new BatteryDB(this.getApplicationContext())).getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM " + BatteryDB.UPDATE_TABLE + " WHERE " + BatteryDB.DATE_TIME + " > datetime('now', '-4 hour')", null);
+        Cursor c = db.rawQuery("SELECT *, strftime('%H:%M', datetime) FROM " + BatteryDB.UPDATE_TABLE + " WHERE " + BatteryDB.DATE_TIME + " > datetime('now', '-4 hour')", null);
         if (c.moveToFirst()) {
             do {
-                historyList.add(new BatteryHistoryPoint(c.getString(1), c.getInt(2)));
-//                Log.d("bat_history", "battery history timestamp: " + c.getString(1));
+                // element 5 is the nicely formatted time
+                historyList.add(new BatteryHistoryPoint(c.getString(5), c.getInt(2)));
+//                Log.d("bat_history", "battery history timestamp: " + c.getString(5));
             } while (c.moveToNext());
         }
         db.close();
