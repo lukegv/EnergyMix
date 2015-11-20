@@ -86,8 +86,8 @@ public class EnergyDataParser {
         List<EnergyDataHolder> dataHolderList = new ArrayList<>();
 
         try {
-            // skip first line that contains headers
-            nextLine = reader.readNext();
+            // skip first line that contains headers DEPRECATED
+            //nextLine = reader.readNext();
 //            lastLine = nextLine;
 
 

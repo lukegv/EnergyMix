@@ -12,6 +12,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static String csvData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,7 +22,12 @@ public class MainActivity extends AppCompatActivity {
 
 
         WebRequester webRequester = new WebRequester();
-        String csvData = webRequester.loadData(MainActivity.this);
+        webRequester.loadData(MainActivity.this);
+
+
+    }
+
+    public void updateView() {
 
         EnergyDataParser energyDataParser = new EnergyDataParser(csvData);
 
