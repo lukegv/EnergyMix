@@ -38,7 +38,7 @@ public class WebRequester {
                         Log.d("volley", "Response is: " + response.substring(0, 100) + "...");
                         Log.d("volley", "Response length is: "+ response.length());
                         activity.EnergyMixData = response;
-                        activity.updateEnergyMix();
+                        activity.updateEnergyMixData();
 
                         Toast t = Toast.makeText(activity.getApplicationContext(), "Data Update Successful!", Toast.LENGTH_SHORT);
                         t.show();

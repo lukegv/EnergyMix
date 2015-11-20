@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private LineChart chartHistory;
     // Energy Mix
     private RelativeLayout containerEnergyMix;
+    // Energy Mix Over Time
+    private LineChart chartEnergyMixOverTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
         this.containerEnergyMix = (RelativeLayout) findViewById(R.id.containerEnergyMix);
 
+        this.chartEnergyMixOverTime = (LineChart) findViewById(R.id.chartEnergyMixOverTime);
     }
 
     private BroadcastReceiver connectedReceiver = new BroadcastReceiver() {
@@ -97,12 +100,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        startEnergyMix();
+        this.startEnergyMix();
+        this.startEnergyMixOverTime();
+        WebRequester webRequester = new WebRequester();
+        webRequester.loadData(MainActivity.this);
         IntentFilter confilter = new IntentFilter(Intent.ACTION_POWER_CONNECTED);
         this.registerReceiver(this.connectedReceiver, confilter);
         IntentFilter disfilter = new IntentFilter(Intent.ACTION_POWER_DISCONNECTED);
         this.registerReceiver(this.disconnectedReceiver, disfilter);
         this.updateHandler.post(this.updateRun);
+    }
+
+    public String EnergyMixData;
+
+    public void updateEnergyMixData() {
+        this.updateEnergyMix();
+        this.updateEnergyMixOverTime();
     }
 
     @Override
@@ -221,8 +234,6 @@ public class MainActivity extends AppCompatActivity {
 
     // Energy Mix
 
-    public String EnergyMixData;
-
     /** Colors to be used for the pie slices. */
     private static int[] EnergyMixCOLORS = new int[] { Color.GREEN, Color.BLUE, Color.MAGENTA, Color.CYAN, Color.RED, Color.YELLOW,
             Color.GRAY};
@@ -247,9 +258,6 @@ public class MainActivity extends AppCompatActivity {
         renderer.setLabelsTextSize(textSize);
 
         chartView = ChartFactory.getPieChartView(this, series, renderer);
-
-        WebRequester webRequester = new WebRequester();
-        webRequester.loadData(MainActivity.this);
     }
 
     public void updateEnergyMix() {
@@ -291,7 +299,51 @@ public class MainActivity extends AppCompatActivity {
 
     // Energy Mix Over Time
 
+    private static int[] EnergyMixOverTimeCOLORS = new int[] { Color.GREEN, Color.BLUE, Color.MAGENTA, Color.CYAN, Color.RED, Color.YELLOW,
+            Color.GRAY};
+
     private void startEnergyMixOverTime() {
-        
+        this.chartEnergyMixOverTime.setTouchEnabled(false);
+        this.chartEnergyMixOverTime.setDescription("");
     }
+
+    private void updateEnergyMixOverTime() {
+        EnergyDataParser energyDataParser = new EnergyDataParser(this.EnergyMixData);
+
+        EnergyDataHolder dataHolder = energyDataParser.GetLatestDataSet();
+        List<EnergyDataHolder> dataHistory = energyDataParser.GetTodaysDataHistory();
+
+        ArrayList<String> xvals = new ArrayList<String>();
+        ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
+
+        for (int j = 0; j < dataHolder.data.size(); j++) {
+
+            ArrayList<Entry> entries = new ArrayList<Entry>();
+
+            String name = dataHistory.get(0).data.get(j).first;
+
+            for (int i = 0; i < dataHistory.size(); i++) {
+                Pair<String, Double> pa = dataHistory.get(i).data.get(j);
+                double d = pa.second;
+                float v = (float) d;
+                entries.add(new Entry(v, i));
+                if(j==0)
+                    xvals.add(Integer.toString(i));
+            }
+            LineDataSet set = new LineDataSet(entries, name);
+            set.setAxisDependency(YAxis.AxisDependency.LEFT);
+            set.setDrawCircles(false);
+            set.setLineWidth(3f);
+            set.setColor(EnergyMixOverTimeCOLORS[(j % EnergyMixOverTimeCOLORS.length)]);
+            set.setDrawCubic(true);
+
+            dataSets.add(set);
+        }
+
+        LineData data = new LineData(xvals, dataSets);
+        data.setDrawValues(false);
+        this.chartEnergyMixOverTime.setData(data);
+        this.chartEnergyMixOverTime.invalidate();
+    }
+
 }
