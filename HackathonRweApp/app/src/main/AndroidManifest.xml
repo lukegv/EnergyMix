@@ -26,6 +26,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.inces.hackathonrweapp.MainActivity" />
         </activity>
+        <activity
+            android:name=".LinearChartActivity"
+            android:label="@string/title_activity_linear_chart"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.inces.hackathonrweapp.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
