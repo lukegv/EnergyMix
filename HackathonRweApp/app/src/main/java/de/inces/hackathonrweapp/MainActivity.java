@@ -11,14 +11,25 @@ import android.os.BatteryManager;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Pair;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+
+import org.achartengine.ChartFactory;
+import org.achartengine.GraphicalView;
+import org.achartengine.model.CategorySeries;
+import org.achartengine.model.SeriesSelection;
+import org.achartengine.renderer.DefaultRenderer;
+import org.achartengine.renderer.SimpleSeriesRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +39,13 @@ import de.inces.hackathonrweapp.batteryDataRecord.BatteryUpdateReceiver;
 
 public class MainActivity extends AppCompatActivity {
 
+    // Battery State
     private TextView txtBatteryPercentage;
     private ImageView imgBatteryChargeState;
+    // Battery History
     private LineChart chartHistory;
+    // Energy Mix
+    private RelativeLayout containerEnergyMix;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
         this.chartHistory.setDescription("");
         this.chartHistory.getLegend().setEnabled(false);
         this.chartHistory.getXAxis().setDrawLabels(false);
+
+        this.containerEnergyMix = (RelativeLayout) findViewById(R.id.containerEnergyMix);
 
     }
 
@@ -80,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        startEnergyMix();
         IntentFilter confilter = new IntentFilter(Intent.ACTION_POWER_CONNECTED);
         this.registerReceiver(this.connectedReceiver, confilter);
         IntentFilter disfilter = new IntentFilter(Intent.ACTION_POWER_DISCONNECTED);
@@ -199,5 +217,81 @@ public class MainActivity extends AppCompatActivity {
         data.setDrawValues(false);
         this.chartHistory.setData(data);
         this.chartHistory.invalidate();
+    }
+
+    // Energy Mix
+
+    public String EnergyMixData;
+
+    /** Colors to be used for the pie slices. */
+    private static int[] EnergyMixCOLORS = new int[] { Color.GREEN, Color.BLUE, Color.MAGENTA, Color.CYAN, Color.RED, Color.YELLOW,
+            Color.GRAY};
+
+    private CategorySeries series;
+    private DefaultRenderer renderer;
+    /** The chart view that displays the data. */
+    private GraphicalView chartView;
+    private SeriesSelection seriesSelection;
+
+    private void startEnergyMix() {
+        series = new CategorySeries("series");
+
+        renderer = new DefaultRenderer();
+        renderer.setStartAngle(180);
+        renderer.setDisplayValues(false);
+        renderer.setZoomEnabled(false);
+        renderer.setShowLegend(false);
+        renderer.setClickEnabled(false);
+        float textSize = renderer.getLabelsTextSize();
+        textSize = textSize *3;
+        renderer.setLabelsTextSize(textSize);
+
+        chartView = ChartFactory.getPieChartView(this, series, renderer);
+
+        WebRequester webRequester = new WebRequester();
+        webRequester.loadData(MainActivity.this);
+    }
+
+    public void updateEnergyMix() {
+        EnergyDataParser energyDataParser = new EnergyDataParser(this.EnergyMixData);
+
+        EnergyDataHolder dataHolder = energyDataParser.GetLatestDataSet();
+
+        for(int i = 0; i < dataHolder.data.size(); i++) {
+            Pair p = dataHolder.data.get(i);
+            addNewSeriespoint(p);
+        }
+
+        seriesSelection = chartView.getCurrentSeriesAndPoint();
+
+        if (seriesSelection == null) {
+            Toast.makeText(MainActivity.this, "No chart element selected", Toast.LENGTH_SHORT)
+                    .show();
+        } else {
+            for (int i = 0; i < series.getItemCount(); i++) {
+                renderer.getSeriesRendererAt(i).setHighlighted(i == seriesSelection.getPointIndex());
+            }
+            chartView.repaint();
+            Toast.makeText(
+                    MainActivity.this,
+                    "Chart data point index " + seriesSelection.getPointIndex() + " selected"
+                            + " point value=" + seriesSelection.getValue(), Toast.LENGTH_SHORT).show();
+        }
+
+        this.containerEnergyMix.addView(chartView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        chartView.repaint();
+    }
+
+    private void addNewSeriespoint(Pair p){
+        series.add(p.first.toString(), new Double(p.second.toString()));
+        SimpleSeriesRenderer simpleSeriesRenderer = new SimpleSeriesRenderer();
+        simpleSeriesRenderer.setColor(EnergyMixCOLORS[(series.getItemCount() - 1) % EnergyMixCOLORS.length]);
+        renderer.addSeriesRenderer(simpleSeriesRenderer);
+    }
+
+    // Energy Mix Over Time
+
+    private void startEnergyMixOverTime() {
+        
     }
 }

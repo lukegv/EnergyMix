@@ -4,20 +4,14 @@ package de.inces.hackathonrweapp;
  * Created by Lennart on 20.11.2015.
  */
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
-import android.util.Pair;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import java.util.List;
 
 public class WebRequester {
 
@@ -25,7 +19,7 @@ public class WebRequester {
         // constructor
     }
 
-    public void loadData(final Context context) {
+    public void loadData(final MainActivity activity) {
 
         // async http request
         // Instantiate the RequestQueue.
@@ -43,12 +37,10 @@ public class WebRequester {
                         // Display the first 500 characters of the response string.
                         Log.d("volley", "Response is: " + response.substring(0, 100) + "...");
                         Log.d("volley", "Response length is: "+ response.length());
-                        //MainActivity.csvData = response;
+                        activity.EnergyMixData = response;
+                        activity.updateEnergyMix();
 
-                        //MainActivity mainActivity = (MainActivity)context;
-                        //mainActivity.updateView();
-
-                        Toast t = Toast.makeText(context, "Data Update Successful!", Toast.LENGTH_SHORT);
+                        Toast t = Toast.makeText(activity.getApplicationContext(), "Data Update Successful!", Toast.LENGTH_SHORT);
                         t.show();
 
                     }
@@ -58,12 +50,12 @@ public class WebRequester {
                     public void onErrorResponse(VolleyError error) {
                         Log.d("volley", "That didn't work!");
 
-                        Toast t = Toast.makeText(context, "Data Update Failed!", Toast.LENGTH_SHORT);
+                        Toast t = Toast.makeText(activity.getApplicationContext(), "Data Update Failed!", Toast.LENGTH_SHORT);
                         t.show();
                     }
                 });
 
-        MySingleton.getInstance(context).addToRequestQueue(stringRequest);
+        MySingleton.getInstance(activity.getApplicationContext()).addToRequestQueue(stringRequest);
 
 
     }
