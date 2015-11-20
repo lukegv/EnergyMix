@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">HackathonRWTH Energy App</string>
+    <string-array name="energytypes_array">
+        <item>Biomass</item>
+        <item>Coal</item>
+        <item>Gas</item>
+        <item>Oil</item>
+        <item>Geothermal</item>
+        <item>Hydro</item>
+        <item>Nuclear</item>
+        <item>Solar</item>
+        <item>Waste</item>
+        <item>Wind</item>
+        <item>Other</item>
+    </string-array>
 </resources>
