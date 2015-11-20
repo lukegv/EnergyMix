@@ -147,6 +147,53 @@
                 android:layout_width="match_parent"
                 android:layout_height="30dp" />
 
+            <RelativeLayout
+                android:layout_marginTop="10dp"
+                android:background="#9C27B0"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:clickable="false"
+                    android:background="@android:color/white"
+                    android:id="@+id/containerNotification"
+                    android:layout_margin="5dp"
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/text1"
+                    android:text="@string/notification_text"
+                    android:textStyle="bold"
+                    android:textIsSelectable="false"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:gravity="top"
+                    android:layout_gravity="top"
+                    android:textColor="@android:color/black" />
+
+                <Spinner
+                    android:id="@+id/spinnerFavoriteEnergySource"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/energytypes_array"
+                    android:layout_weight="1"
+                    android:gravity="top"
+                    android:layout_gravity="top" />
+
+                <CheckBox
+                    android:id="@+id/checkboxFavoriteEnergyNotification"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/notification_checkbox" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
         </LinearLayout>
 
     </ScrollView>
