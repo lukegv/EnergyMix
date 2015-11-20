@@ -205,7 +205,9 @@ public class MainActivity extends AppCompatActivity {
         this.chartHistory.setGridBackgroundColor(Color.WHITE);
         this.chartHistory.setDrawGridBackground(false);
         this.chartHistory.getAxisRight().setEnabled(false);
-        this.chartHistory.getAxisLeft().setAxisMaxValue(105f);
+        this.chartHistory.getAxisLeft().setStartAtZero(false);
+        this.chartHistory.getAxisLeft().setAxisMaxValue(102f);
+        this.chartHistory.getAxisLeft().setAxisMinValue(-2f);
     }
 
     private void updateHistoryData() {
