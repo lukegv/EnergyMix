@@ -160,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
     public void updateEnergyMixData() {
         this.updateEnergyMix();
         this.updateEnergyMixOverTime();
+        Toast.makeText(this, "Energy Mix Updated!", Toast.LENGTH_SHORT).show();
     }
 
     @Override

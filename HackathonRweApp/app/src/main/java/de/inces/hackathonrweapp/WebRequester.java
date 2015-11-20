@@ -28,7 +28,7 @@ public class WebRequester {
 
         // hard-coded URL
         final String url ="http://rwe-hackathon.lima-city.de/query_energy_database.php?auth=3a1b30712e4d86ba&key=3061c95fc954aa1f";
-        
+
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
