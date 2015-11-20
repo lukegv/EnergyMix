@@ -144,10 +144,6 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="30dp" />
-
-            <RelativeLayout
                 android:layout_marginTop="10dp"
                 android:background="#9C27B0"
                 android:layout_width="match_parent"
@@ -165,15 +161,12 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/text1"
+                    android:textSize="16sp"
                     android:text="@string/notification_text"
-                    android:textStyle="bold"
                     android:textIsSelectable="false"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:gravity="top"
-                    android:layout_gravity="top"
-                    android:textColor="@android:color/black" />
+                    android:layout_margin="3dp"
+                    android:gravity="center_horizontal"
+                    android:layout_gravity="center_horizontal" />
 
                 <Spinner
                     android:id="@+id/spinnerFavoriteEnergySource"
@@ -193,6 +186,11 @@
                 </LinearLayout>
 
             </RelativeLayout>
+
+            <!-- ghetto fix -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp" />
 
         </LinearLayout>
 
