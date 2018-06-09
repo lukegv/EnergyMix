@@ -1,5 +1,10 @@
 # Energy Mix
-#### Small energy consumption app for [RWTH Entrepreneurship](http://www.gruenderzentrum.rwth-aachen.de/) Hackathon RWE Track
+
+> This project is archived.
+>
+> It was created during a hackathon of the RWTH Entrepreneurship for the RWE track.
+
+#### Small energy consumption app for [RWTH Entrepreneurship](http://www.gruenderzentrum.rwth-aachen.de/) Hackathon RWE track
 
 At the RWTH Aachen Entrepreneurship hackathon in November 2015, sponsored by RWE and Zalando, RWE set us (a team of 3 developers) the task to create a mobile application combining the battery data of a local device and data containing the current energy mix by production type in the german electricity grid, in only one night (16 1/2 hours).
 
